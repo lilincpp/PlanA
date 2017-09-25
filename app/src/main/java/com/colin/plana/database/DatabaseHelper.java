@@ -15,7 +15,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static volatile DatabaseHelper INSTANCE = null;
 
-    public DatabaseHelper(Context context) {
+    public static DatabaseHelper newInstance(Context context){
+        
+    }
+
+
+    private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
