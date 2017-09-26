@@ -6,5 +6,8 @@
 
     <string name="action_settings">Settings</string>
 
-    <string name="add_task">添加记事...</string>
+    <string name="add_task">添加计划...</string>
+    <string name="empty_task">当前没有计划</string>
+    <string name="hint_title">标题</string>
+    <string name="hint_content">点击编辑计划内容</string>
 </resources>

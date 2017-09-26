@@ -7,7 +7,14 @@
     <dimen name="nav_header_author_size">48dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
+    <!--TabLayout设置-->
     <dimen name="tab_height">64dp</dimen>
+    <dimen name="tab_indicator_height">4dp</dimen>
+
+
+    <!--编辑界面底部菜单相关设置-->
+    <dimen name="menu_bottom_height">56dp</dimen>
+    <dimen name="menu_item_size">56dp</dimen>
 
 
     <!--字体大小-->
@@ -18,7 +25,7 @@
 
     <!--间隙-->
     <dimen name="padding_text">16dp</dimen>
-    
+
     <!--阴影-->
     <dimen name="elevation_8">8dp</dimen>
     <dimen name="elevation_4">4dp</dimen>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:background="@drawable/shape_elevation"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="@dimen/elevation_4"
+        app:navigationIcon="@drawable/ic_menu_back" />
+
+    <EditText
+        android:id="@+id/et_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_edittext"
+        android:hint="@string/hint_title"
+        android:padding="@dimen/padding_text"
+        android:textSize="@dimen/text_xlarge_size" />
+
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/shape_edittext"
+        android:gravity="start"
+        android:hint="@string/hint_content"
+        android:padding="@dimen/padding_text"
+        android:textSize="@dimen/text_large_size" />
+
+    <LinearLayout
+        android:id="@+id/lay_bottom_menu"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/menu_bottom_height"
+        android:background="@drawable/shape_elevation"
+        android:elevation="@dimen/elevation_4"
+        android:orientation="horizontal">
+
+        <ImageButton
+            style="?attr/borderlessButtonStyle"
+            android:layout_width="@dimen/menu_item_size"
+            android:layout_height="@dimen/menu_item_size"
+            android:src="@drawable/ic_menu_expand_type" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/colorSecondaryText"
+            android:textSize="@dimen/text_normal_size" />
+
+        <ImageButton
+            style="?attr/borderlessButtonStyle"
+            android:layout_width="@dimen/menu_item_size"
+            android:layout_height="@dimen/menu_item_size"
+            android:src="@drawable/ic_menu_expand_palette" />
+    </LinearLayout>
+
+</LinearLayout>

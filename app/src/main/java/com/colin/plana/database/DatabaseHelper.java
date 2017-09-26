@@ -15,8 +15,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static volatile DatabaseHelper INSTANCE = null;
 
-    public static DatabaseHelper newInstance(Context context){
-        
+    public static DatabaseHelper getInstance(Context context) {
+        DatabaseHelper temp = INSTANCE;
+        if (temp == null) {
+            synchronized (DatabaseHelper.class) {
+                temp = INSTANCE;
+                if (temp == null) {
+                    temp = new DatabaseHelper(context);
+                    INSTANCE = temp;
+                }
+            }
+        }
+        return temp;
     }
 
 
@@ -24,8 +34,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    public static final String TABLE_TASK = "table_task";
+
+    private static final String CREATE_TABLE_TASK = "CREATE TABLE " + TABLE_TASK + " ("
+            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "title TEXT,"
+            + "content TEXT,"
+            + "belong INTEGER"
+            + ")";
+
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        sqLiteDatabase.execSQL(CREATE_TABLE_TASK);
 
     }
 

@@ -12,8 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.colin.plana.R;
-import com.colin.plana.ui.home.weeklytasklist.WeeklyTaskListFragment;
-import com.colin.plana.ui.home.weeklytasklist.WeeklyTaskListPresenter;
+import com.colin.plana.ui.home.weeklytask.WeeklyTaskFragment;
+import com.colin.plana.ui.home.weeklytask.WeeklyTaskPresenter;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -35,9 +35,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        WeeklyTaskListFragment weeklyTaskListFragment = new WeeklyTaskListFragment();
+        WeeklyTaskFragment weeklyTaskListFragment = new WeeklyTaskFragment();
         fragmentManager.beginTransaction().replace(R.id.container, weeklyTaskListFragment).commit();
-        new WeeklyTaskListPresenter(weeklyTaskListFragment);
+        new WeeklyTaskPresenter(weeklyTaskListFragment);
     }
 
     @Override
