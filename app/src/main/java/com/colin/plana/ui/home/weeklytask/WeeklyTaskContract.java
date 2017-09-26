@@ -12,7 +12,7 @@ import java.util.List;
  * Created by colin on 2017/9/25.
  */
 
-public interface WeeklyTaskContract {
+interface WeeklyTaskContract {
 
     interface View extends BaseView<Presenter> {
 

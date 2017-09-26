@@ -3,6 +3,7 @@ package com.colin.plana.ui.home.weeklytask;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.colin.plana.constants.DailyNumbers;
 import com.colin.plana.database.TaskDatabaseHelper;
@@ -19,6 +20,8 @@ import java.util.List;
 
 public class WeeklyTaskPresenter implements WeeklyTaskContract.Presenter {
 
+    private static final String TAG = "WeeklyTaskPresenter";
+
     private WeeklyTaskContract.View mView;
 
     public WeeklyTaskPresenter(@NonNull WeeklyTaskContract.View view) {
@@ -28,6 +31,7 @@ public class WeeklyTaskPresenter implements WeeklyTaskContract.Presenter {
 
     @Override
     public void start() {
+        Log.e(TAG, "start: ");
         QueryTask queryTask = new QueryTask(mView.getViewContext());
         queryTask.execute();
     }
@@ -43,6 +47,9 @@ public class WeeklyTaskPresenter implements WeeklyTaskContract.Presenter {
         @Override
         protected List<DailyTask> doInBackground(Void... voids) {
             List<TaskEntity> taskEntities = TaskDatabaseHelper.queryAllTask(mContextWeakReference.get());
+            for (TaskEntity taskEntity : taskEntities) {
+                Log.e(TAG, "doInBackground: " + taskEntity.toString());
+            }
             List<DailyTask> dailyTasks = new ArrayList<>();
             for (int i = 0; i < DailyNumbers.DAILY_NUMBERS.length; ++i) {
                 DailyTask dailyTask = new DailyTask(
@@ -58,6 +65,7 @@ public class WeeklyTaskPresenter implements WeeklyTaskContract.Presenter {
                 dailyTask.setTaskEntities(taskList);
                 dailyTasks.add(dailyTask);
             }
+            Log.e(TAG, "doInBackground: ");
             return dailyTasks;
         }
 

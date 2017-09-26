@@ -35,4 +35,11 @@ public final class TaskDatabaseHelper {
         database.close();
         return taskEntities;
     }
+
+    public static void saveTask(Context context, TaskEntity entity) {
+        SQLiteDatabase database = DatabaseHelper.getInstance(context).getWritableDatabase();
+        final String sql = "INSERT INTO " + DatabaseHelper.TABLE_TASK + " (title,content,belong) VALUES (?,?,?)";
+        database.execSQL(sql, new Object[]{entity.getTitle(), entity.getContent(), entity.getBelong()});
+        database.close();
+    }
 }

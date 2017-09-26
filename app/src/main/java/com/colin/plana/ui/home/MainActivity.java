@@ -34,6 +34,11 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         FragmentManager fragmentManager = getSupportFragmentManager();
         WeeklyTaskFragment weeklyTaskListFragment = new WeeklyTaskFragment();
         fragmentManager.beginTransaction().replace(R.id.container, weeklyTaskListFragment).commit();

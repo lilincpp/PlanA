@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/padding_8"
+    android:layout_marginStart="@dimen/padding_8"
+    android:layout_marginTop="@dimen/padding_16"
+    android:maxHeight="@dimen/task_maxheight"
+    android:minHeight="@dimen/task_minheight"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_task_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:ellipsize="end"
+        android:maxLines="@integer/task_info_max_lines"
+        android:padding="@dimen/padding_16"
+        android:textSize="@dimen/text_normal_size" />
+
+</android.support.v7.widget.CardView>

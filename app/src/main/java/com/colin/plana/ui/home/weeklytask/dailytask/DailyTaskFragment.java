@@ -3,6 +3,7 @@ package com.colin.plana.ui.home.weeklytask.dailytask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ public class DailyTaskFragment extends Fragment {
     private TextView mTvEmpty;
 
     private DailyTask mDailyTask;
+    private TaskListAdapter mTaskListAdapter;
 
 
     public static DailyTaskFragment newInstance(DailyTask dailyTask) {
@@ -55,12 +57,18 @@ public class DailyTaskFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        initData();
+    }
+
+    private void initData() {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
             mDailyTask = bundle.getParcelable(BUNDLE_KEY);
             if (mDailyTask.isEmpty()) {
                 showEmptyView();
+            } else {
+                showTasklist();
             }
         }
     }
@@ -68,5 +76,13 @@ public class DailyTaskFragment extends Fragment {
     private void showEmptyView() {
         mDailyTaskList.setVisibility(View.GONE);
         mTvEmpty.setVisibility(View.VISIBLE);
+    }
+
+    private void showTasklist() {
+        mTaskListAdapter = new TaskListAdapter(mDailyTask.getTaskEntities());
+        mDailyTaskList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mDailyTaskList.setAdapter(mTaskListAdapter);
+        mDailyTaskList.addItemDecoration(new LastSpaceItemDecoration());
+
     }
 }

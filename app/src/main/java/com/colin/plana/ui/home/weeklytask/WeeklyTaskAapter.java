@@ -23,6 +23,11 @@ public class WeeklyTaskAapter extends FragmentPagerAdapter {
         this.dailyTasks = tasks;
     }
 
+    public void setDailyTasks(List<DailyTask> dailyTasks) {
+        this.dailyTasks = dailyTasks;
+        notifyDataSetChanged();
+    }
+
     @Override
     public Fragment getItem(int position) {
         return DailyTaskFragment.newInstance(dailyTasks.get(position));

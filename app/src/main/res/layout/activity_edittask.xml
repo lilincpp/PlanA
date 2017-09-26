@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/shape_edittext"
         android:hint="@string/hint_title"
-        android:padding="@dimen/padding_text"
+        android:padding="@dimen/padding_16"
         android:textSize="@dimen/text_xlarge_size" />
 
     <EditText
@@ -30,7 +30,7 @@
         android:background="@drawable/shape_edittext"
         android:gravity="start"
         android:hint="@string/hint_content"
-        android:padding="@dimen/padding_text"
+        android:padding="@dimen/padding_16"
         android:textSize="@dimen/text_large_size" />
 
     <LinearLayout

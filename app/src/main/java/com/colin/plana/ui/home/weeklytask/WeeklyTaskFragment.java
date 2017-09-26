@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 
 import com.colin.plana.R;
 import com.colin.plana.entities.DailyTask;
+import com.colin.plana.entities.TaskEntity;
 import com.colin.plana.ui.edit.EditTaskActivity;
 import com.colin.plana.utils.CommonUtil;
 
@@ -24,6 +26,8 @@ import java.util.List;
  */
 
 public class WeeklyTaskFragment extends Fragment implements WeeklyTaskContract.View, View.OnClickListener {
+
+    private static final String TAG = "WeeklyTaskFragment";
     private TabLayout mTaskNames;
     private ViewPager mWeeklyTask;
     private LinearLayout mAddTask;
@@ -42,7 +46,20 @@ public class WeeklyTaskFragment extends Fragment implements WeeklyTaskContract.V
     @Override
     public void onResume() {
         super.onResume();
+        Log.e(TAG, "### onResume()");
         mPresenter.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e(TAG, "### onPause()");
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Log.e(TAG, "onHiddenChanged=" + hidden);
     }
 
     @Override
@@ -64,7 +81,7 @@ public class WeeklyTaskFragment extends Fragment implements WeeklyTaskContract.V
         mTaskNames = (TabLayout) view.findViewById(R.id.tl_date);
         mWeeklyTask = (ViewPager) view.findViewById(R.id.vp_tasklist);
         mAddTask = (LinearLayout) view.findViewById(R.id.lay_add_task);
-
+        mTaskNames.setupWithViewPager(mWeeklyTask);
         mAddTask.setOnClickListener(this);
 
         mTaskNames.setElevation(4);
@@ -82,8 +99,18 @@ public class WeeklyTaskFragment extends Fragment implements WeeklyTaskContract.V
 
     @Override
     public void onFinish(List<DailyTask> weeklyTask) {
-        mWeeklyTaskAapter = new WeeklyTaskAapter(getChildFragmentManager(), weeklyTask);
-        mWeeklyTask.setAdapter(mWeeklyTaskAapter);
-        mTaskNames.setupWithViewPager(mWeeklyTask);
+        for (DailyTask dailyTask : weeklyTask) {
+            for (TaskEntity entity : dailyTask.getTaskEntities()) {
+                Log.e(TAG, "onFinish: " + entity.toString());
+            }
+        }
+
+        Log.e(TAG, "onFinish: " + Thread.currentThread().getName());
+        if (mWeeklyTaskAapter != null) {
+            mWeeklyTaskAapter.setDailyTasks(weeklyTask);
+        } else {
+            mWeeklyTaskAapter = new WeeklyTaskAapter(getChildFragmentManager(), weeklyTask);
+            mWeeklyTask.setAdapter(mWeeklyTaskAapter);
+        }
     }
 }

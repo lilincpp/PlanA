@@ -73,4 +73,13 @@ public final class TaskEntity implements Parcelable {
         parcel.writeString(content);
         parcel.writeInt(belong);
     }
+
+    @Override
+    public String toString() {
+        return "TaskEntity{" +
+                "title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", belong=" + belong +
+                '}';
+    }
 }
