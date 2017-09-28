@@ -18,7 +18,7 @@ interface WeeklyTaskContract {
 
         Context getViewContext();
 
-        void onFinish(List<DailyTask> weeklyTask);
+        void onFinish(List<DailyTask> weeklyTask,int today);
 
     }
 

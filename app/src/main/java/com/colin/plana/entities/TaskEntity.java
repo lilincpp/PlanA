@@ -9,21 +9,42 @@ import android.os.Parcelable;
 
 public final class TaskEntity implements Parcelable {
 
-    public TaskEntity(String title, String content, int belong) {
+    public TaskEntity(int id, String title, String content, int dailyNumber, int type) {
+        this.id = id;
         this.title = title;
         this.content = content;
-        this.belong = belong;
+        this.dailyNumber = dailyNumber;
+        this.type = type;
+    }
+
+    public TaskEntity(String title, String content, int dailyNumber, int type) {
+        this.title = title;
+        this.content = content;
+        this.dailyNumber = dailyNumber;
+        this.type = type;
     }
 
     public TaskEntity(Parcel in) {
+        this.id = in.readInt();
         this.title = in.readString();
         this.content = in.readString();
-        this.belong = in.readInt();
+        this.dailyNumber = in.readInt();
+        this.type = in.readInt();
     }
 
+    private int id;
     private String title;
     private String content;
-    private int belong;
+    private int dailyNumber;
+    private int type;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -41,12 +62,20 @@ public final class TaskEntity implements Parcelable {
         this.content = content;
     }
 
-    public int getBelong() {
-        return belong;
+    public int getDailyNumber() {
+        return dailyNumber;
     }
 
-    public void setBelong(int belong) {
-        this.belong = belong;
+    public void setDailyNumber(int dailyNumber) {
+        this.dailyNumber = dailyNumber;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public static final Parcelable.Creator<TaskEntity> CREATOR = new Creator<TaskEntity>() {
@@ -69,9 +98,11 @@ public final class TaskEntity implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
         parcel.writeString(title);
         parcel.writeString(content);
-        parcel.writeInt(belong);
+        parcel.writeInt(dailyNumber);
+        parcel.writeInt(type);
     }
 
     @Override
@@ -79,7 +110,7 @@ public final class TaskEntity implements Parcelable {
         return "TaskEntity{" +
                 "title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", belong=" + belong +
+                ", dailyNumber=" + dailyNumber +
                 '}';
     }
 }

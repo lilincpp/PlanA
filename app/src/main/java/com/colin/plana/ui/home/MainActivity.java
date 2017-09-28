@@ -1,6 +1,8 @@
 package com.colin.plana.ui.home;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,11 +14,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.colin.plana.R;
+import com.colin.plana.database.TaskDatabaseHelper;
 import com.colin.plana.ui.home.weeklytask.WeeklyTaskFragment;
 import com.colin.plana.ui.home.weeklytask.WeeklyTaskPresenter;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, HomeContract.View {
+
+    private HomeContract.Presenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +29,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        new HomePresenter(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -39,10 +46,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        WeeklyTaskFragment weeklyTaskListFragment = new WeeklyTaskFragment();
-        fragmentManager.beginTransaction().replace(R.id.container, weeklyTaskListFragment).commit();
-        new WeeklyTaskPresenter(weeklyTaskListFragment);
+        mPresenter.start();
     }
 
     @Override
@@ -70,7 +74,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_delete_all) {
+            TaskDatabaseHelper.deleteAllTask(this);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            WeeklyTaskFragment weeklyTaskListFragment = new WeeklyTaskFragment();
+            fragmentManager.beginTransaction().replace(R.id.container, weeklyTaskListFragment).commit();
+            new WeeklyTaskPresenter(weeklyTaskListFragment);
             return true;
         }
 
@@ -81,24 +90,26 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
+        mPresenter.onClick(item.getItemId());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void setPresenter(HomeContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public void moveToFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+    }
+
+    @Override
+    public Context getContextView() {
+        return this;
     }
 }

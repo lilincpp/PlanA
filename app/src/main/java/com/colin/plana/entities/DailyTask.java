@@ -14,17 +14,35 @@ public final class DailyTask implements Parcelable {
 
     private String name;
     private int dailyNumber;
+    private int type;
     private ArrayList<TaskEntity> taskEntities;
 
-    public DailyTask(String name, int dailyNumber) {
+    public DailyTask(String name, int dailyNumber, int type) {
         this.name = name;
         this.dailyNumber = dailyNumber;
+        this.type = type;
+    }
+
+    public DailyTask(String name, int type, ArrayList<TaskEntity> taskEntities) {
+        this.name = name;
+        this.type = type;
+        this.dailyNumber = -1;
+        this.taskEntities = taskEntities;
     }
 
     public DailyTask(Parcel in) {
         this.name = in.readString();
         this.dailyNumber = in.readInt();
+        this.type = in.readInt();
         this.taskEntities = in.readArrayList(TaskEntity.class.getClassLoader());
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public String getName() {
@@ -76,6 +94,7 @@ public final class DailyTask implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeInt(dailyNumber);
+        dest.writeInt(type);
         dest.writeList(taskEntities);
     }
 }

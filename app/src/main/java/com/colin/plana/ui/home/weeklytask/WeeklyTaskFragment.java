@@ -84,7 +84,6 @@ public class WeeklyTaskFragment extends Fragment implements WeeklyTaskContract.V
         mTaskNames.setupWithViewPager(mWeeklyTask);
         mAddTask.setOnClickListener(this);
 
-        mTaskNames.setElevation(4);
     }
 
     @Override
@@ -98,19 +97,14 @@ public class WeeklyTaskFragment extends Fragment implements WeeklyTaskContract.V
     }
 
     @Override
-    public void onFinish(List<DailyTask> weeklyTask) {
-        for (DailyTask dailyTask : weeklyTask) {
-            for (TaskEntity entity : dailyTask.getTaskEntities()) {
-                Log.e(TAG, "onFinish: " + entity.toString());
-            }
-        }
-
-        Log.e(TAG, "onFinish: " + Thread.currentThread().getName());
+    public void onFinish(List<DailyTask> weeklyTask, int today) {
         if (mWeeklyTaskAapter != null) {
             mWeeklyTaskAapter.setDailyTasks(weeklyTask);
         } else {
             mWeeklyTaskAapter = new WeeklyTaskAapter(getChildFragmentManager(), weeklyTask);
             mWeeklyTask.setAdapter(mWeeklyTaskAapter);
         }
+
+        mWeeklyTask.setCurrentItem(today);
     }
 }

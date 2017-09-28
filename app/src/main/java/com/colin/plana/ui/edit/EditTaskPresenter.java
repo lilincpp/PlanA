@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.colin.plana.constants.DailyNumbers;
+import com.colin.plana.constants.TaskType;
 import com.colin.plana.database.TaskDatabaseHelper;
 import com.colin.plana.entities.TaskEntity;
 
@@ -26,9 +27,9 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
     @Override
     public void save(String title, String content, int dailyNumber) {
         if (DailyNumbers.checkLegal(dailyNumber)
-                || (TextUtils.isEmpty(title) && TextUtils.isEmpty(content))) {
+                && !(TextUtils.isEmpty(title) && TextUtils.isEmpty(content))) {
             SaveTask saveTask = new SaveTask(mView.getViewContext());
-            saveTask.execute(new TaskEntity(title, content, dailyNumber));
+            saveTask.execute(new TaskEntity(title, content, dailyNumber, TaskType.TYPE_DOING));
         } else {
             mView.onError("参数不合法");
         }

@@ -40,7 +40,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "title TEXT,"
             + "content TEXT,"
-            + "belong INTEGER"
+            + "daily_number INTEGER NOT NULL,"
+            + "type INTEGER NOT NULL"
             + ")";
 
 

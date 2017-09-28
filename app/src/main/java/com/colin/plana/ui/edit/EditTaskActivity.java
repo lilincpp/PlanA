@@ -6,8 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.colin.plana.R;
 import com.colin.plana.entities.DailyTask;
@@ -17,6 +23,8 @@ import com.colin.plana.entities.DailyTask;
  */
 
 public class EditTaskActivity extends AppCompatActivity implements EditTaskContract.View {
+
+    private static final String TAG = "EditTaskActivity";
 
     public static final String INTENT_DAILY_TASK_KEY = "INTENT_DAILY_TASK_KEY";
 
@@ -56,7 +64,24 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
         setSupportActionBar(toolbar);
 
         toolbar.setNavigationOnClickListener(mNavigationOnClickListener);
+        mEtTitle.setOnEditorActionListener(mOnEditorActionListener);
     }
+
+    //屏蔽EditText的回车键，并且让下一个EditText获得焦点
+    private TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            Log.e(TAG, "onEditorAction: "+actionId );
+            Log.e(TAG, "onEditorAction: "+EditorInfo.IME_ACTION_NEXT );
+
+            //可以选择监听点击事件，也可以选择通过actionId来判断
+            if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                mEtContent.requestFocus();
+                return true;
+            }
+            return false;
+        }
+    };
 
 
     private View.OnClickListener mNavigationOnClickListener = new View.OnClickListener() {
@@ -83,6 +108,6 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
 
     @Override
     public void onError(String msg) {
-
+        finish();
     }
 }

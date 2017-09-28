@@ -24,6 +24,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         taskEntities = tasks;
     }
 
+    public TaskEntity getTaskForPosition(int position) {
+        return taskEntities.get(position);
+    }
+
+    public void deleteTaskForPosition(int position) {
+        taskEntities.remove(position);
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false);
@@ -35,13 +43,18 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         final TaskEntity task = taskEntities.get(position);
         final String title = task.getTitle();
         final String content = task.getContent();
-        final String text =
-                (TextUtils.isEmpty(title)
-                        ? content :
-                        (TextUtils.isEmpty(content) ?
-                                title : (title + "\n" + content))
-                );
-        holder.tvInfo.setText(text);
+        if (TextUtils.isEmpty(title)) {
+            holder.tvTitle.setVisibility(View.GONE);
+            holder.divider.setVisibility(View.GONE);
+        }
+
+        if (TextUtils.isEmpty(content)){
+            holder.tvInfo.setVisibility(View.GONE);
+            holder.divider.setVisibility(View.GONE);
+        }
+
+        holder.tvTitle.setText(title);
+        holder.tvInfo.setText(content);
     }
 
     @Override
@@ -51,11 +64,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tvInfo;
+        TextView tvInfo, tvTitle;
+        View divider;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tvInfo = (TextView) itemView.findViewById(R.id.tv_task_info);
+            tvInfo = (TextView) itemView.findViewById(R.id.tv_task_content);
+            tvTitle = (TextView) itemView.findViewById(R.id.tv_task_title);
+            divider = itemView.findViewById(R.id.divider);
         }
     }
 }

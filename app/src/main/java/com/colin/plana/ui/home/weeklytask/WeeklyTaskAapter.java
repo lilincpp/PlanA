@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.colin.plana.entities.DailyTask;
-import com.colin.plana.ui.home.weeklytask.dailytask.DailyTaskFragment;
+import com.colin.plana.ui.home.weeklytask.dailytask.TaskListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class WeeklyTaskAapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return DailyTaskFragment.newInstance(dailyTasks.get(position));
+        return TaskListFragment.newInstance(dailyTasks.get(position));
     }
 
     @Override

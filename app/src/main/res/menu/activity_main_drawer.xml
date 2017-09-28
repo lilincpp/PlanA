@@ -3,7 +3,7 @@
 
     <group android:checkableBehavior="single" android:id="@+id/g1">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_plan"
             android:icon="@drawable/ic_menu_camera"
             android:title="计划" />
         <item
@@ -15,12 +15,12 @@
 
     <group android:checkableBehavior="single" android:id="@+id/g2">
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:id="@+id/nav_file"
+            android:icon="@drawable/ic_archive_black"
             android:title="已归档" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
+            android:id="@+id/nav_ashcan"
+            android:icon="@drawable/ic_menu_ashcan"
             android:title="垃圾桶" />
     </group>
 
