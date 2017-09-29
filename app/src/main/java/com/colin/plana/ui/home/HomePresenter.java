@@ -2,16 +2,20 @@ package com.colin.plana.ui.home;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.colin.plana.R;
 import com.colin.plana.constants.TaskType;
 import com.colin.plana.database.TaskDatabaseHelper;
 import com.colin.plana.entities.DailyTask;
 import com.colin.plana.entities.TaskEntity;
+import com.colin.plana.ui.home.remindtask.RemindTaskFragment;
 import com.colin.plana.ui.home.weeklytask.WeeklyTaskFragment;
 import com.colin.plana.ui.home.weeklytask.WeeklyTaskPresenter;
 import com.colin.plana.ui.home.weeklytask.dailytask.TaskListFragment;
 import com.colin.plana.ui.home.weeklytask.dailytask.TaskListPresenter;
+import com.colin.plana.utils.PixelUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -23,7 +27,10 @@ import java.util.List;
 
 public class HomePresenter implements HomeContract.Presenter {
 
+    private static final String TAG = "HomePresenter";
+
     private HomeContract.View mView;
+    private LoadTaskInfo mInfo = new LoadTaskInfo();
 
     public HomePresenter(HomeContract.View view) {
         mView = view;
@@ -32,33 +39,70 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void start() {
+        switch (mInfo.type) {
+            case TaskType.TYPE_DOING:
+                onClick(R.id.nav_plan);
+                break;
+            case TaskType.TYPE_REMIND:
+                onClick(R.id.nav_remind);
+                break;
+            default:
+                toWeeklyPlan();
+                break;
+        }
+    }
+
+    private void toWeeklyPlan() {
         WeeklyTaskFragment fragment = new WeeklyTaskFragment();
         new WeeklyTaskPresenter(fragment);
         mView.moveToFragment(fragment);
+        mView.setToolBarTitle("计划");
+        mView.setToolBarElevation(
+                mView.getContextView().getResources().getDimension(R.dimen.elevation_0)
+        );
+
     }
+
+    private void toTaskList(DailyTask task) {
+        TaskListFragment fragment = TaskListFragment.newInstance(task);
+        mView.moveToFragment(fragment);
+        mView.setToolBarTitle(mInfo.name);
+        mView.setToolBarElevation(
+                mView.getContextView().getResources().getDimension(R.dimen.elevation_4)
+        );
+    }
+
+    private void toRemindPlan(DailyTask task) {
+        RemindTaskFragment fragment = RemindTaskFragment.newInstance(task);
+        mView.moveToFragment(fragment);
+        mView.setToolBarTitle(mInfo.name);
+        mView.setToolBarElevation(
+                mView.getContextView().getResources().getDimension(R.dimen.elevation_4)
+        );
+    }
+
 
     @Override
     public void onClick(int itemId) {
         LoadDataTask loadDataTask = new LoadDataTask(mView.getContextView());
-        LoadTaskInfo info = new LoadTaskInfo();
 
         switch (itemId) {
             case R.id.nav_plan:
-                WeeklyTaskFragment fragment = new WeeklyTaskFragment();
-                new WeeklyTaskPresenter(fragment);
-                mView.moveToFragment(fragment);
+                toWeeklyPlan();
                 return;
+            case R.id.nav_remind:
+                mInfo.type = TaskType.TYPE_REMIND;
+                mInfo.name = "提醒";
+                break;
             case R.id.nav_file:
-                info.type = TaskType.TYPE_FILE;
-                info.name = "已归档";
+                mInfo.type = TaskType.TYPE_FILE;
+                mInfo.name = "已归档";
                 break;
             default:
 
                 return;
         }
-
-        loadDataTask.execute(info);
-
+        loadDataTask.execute(mInfo);
     }
 
     private class LoadDataTask extends AsyncTask<LoadTaskInfo, Void, DailyTask> {
@@ -77,9 +121,14 @@ public class HomePresenter implements HomeContract.Presenter {
 
         @Override
         protected void onPostExecute(DailyTask task) {
-            TaskListFragment fragment = TaskListFragment.newInstance(task);
-            new TaskListPresenter(fragment);
-            mView.moveToFragment(fragment);
+            switch (task.getType()) {
+                case TaskType.TYPE_FILE:
+                    toTaskList(task);
+                    break;
+                case TaskType.TYPE_REMIND:
+                    toRemindPlan(task);
+                    break;
+            }
         }
     }
 

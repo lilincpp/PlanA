@@ -29,7 +29,7 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
     public static final String INTENT_DAILY_TASK_KEY = "INTENT_DAILY_TASK_KEY";
 
     private EditText mEtTitle, mEtContent;
-    private int mDailyNumber = -1;
+    private int mDailyNumber = -1, mType = -1;
     private EditTaskContract.Presenter mPresenter;
 
     @Override
@@ -53,6 +53,7 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
         if (intent != null) {
             DailyTask dailyTask = intent.getParcelableExtra(INTENT_DAILY_TASK_KEY);
             mDailyNumber = dailyTask.getDailyNumber();
+            mType = dailyTask.getType();
         }
     }
 
@@ -71,8 +72,8 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
     private TextView.OnEditorActionListener mOnEditorActionListener = new TextView.OnEditorActionListener() {
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            Log.e(TAG, "onEditorAction: "+actionId );
-            Log.e(TAG, "onEditorAction: "+EditorInfo.IME_ACTION_NEXT );
+            Log.e(TAG, "onEditorAction: " + actionId);
+            Log.e(TAG, "onEditorAction: " + EditorInfo.IME_ACTION_NEXT);
 
             //可以选择监听点击事件，也可以选择通过actionId来判断
             if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
@@ -87,7 +88,7 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
     private View.OnClickListener mNavigationOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            mPresenter.save(mEtTitle.getText().toString(), mEtContent.getText().toString(), mDailyNumber);
+            mPresenter.save(mEtTitle.getText().toString(), mEtContent.getText().toString(), mDailyNumber, mType);
         }
     };
 

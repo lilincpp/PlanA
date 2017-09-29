@@ -22,7 +22,7 @@ import com.colin.plana.entities.DailyTask;
 
 public class TaskListFragment extends Fragment implements TaskListContract.View {
 
-    private static final String BUNDLE_KEY = "DAILY_TASK_KEY";
+    public static final String _BUNDLE_KEY = "DAILY_TASK_KEY";
 
     private RecyclerView mDailyTaskList;
     private TextView mTvEmpty;
@@ -36,13 +36,11 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
     public static TaskListFragment newInstance(DailyTask dailyTask) {
         Bundle bundle = new Bundle();
         TaskListFragment dailyTaskFragment = new TaskListFragment();
-        bundle.putParcelable(BUNDLE_KEY, dailyTask);
+        bundle.putParcelable(_BUNDLE_KEY, dailyTask);
         dailyTaskFragment.setArguments(bundle);
         new TaskListPresenter(dailyTaskFragment);
         return dailyTaskFragment;
     }
-
-
 
 
     @Nullable
@@ -68,12 +66,14 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            mDailyTask = bundle.getParcelable(BUNDLE_KEY);
-            if (mDailyTask.isEmpty()) {
+            mDailyTask = bundle.getParcelable(_BUNDLE_KEY);
+            if (mDailyTask == null || mDailyTask.isEmpty()) {
                 showEmptyView();
             } else {
                 showTasklist();
             }
+        } else {
+            showEmptyView();
         }
     }
 

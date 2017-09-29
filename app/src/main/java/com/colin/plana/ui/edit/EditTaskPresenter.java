@@ -3,6 +3,7 @@ package com.colin.plana.ui.edit;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.colin.plana.constants.DailyNumbers;
 import com.colin.plana.constants.TaskType;
@@ -17,6 +18,8 @@ import java.lang.ref.WeakReference;
 
 public class EditTaskPresenter implements EditTaskContract.Presenter {
 
+    private static final String TAG = "EditTaskPresenter";
+
     private EditTaskContract.View mView;
 
     public EditTaskPresenter(EditTaskContract.View mView) {
@@ -25,12 +28,12 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
     }
 
     @Override
-    public void save(String title, String content, int dailyNumber) {
-        if (DailyNumbers.checkLegal(dailyNumber)
-                && !(TextUtils.isEmpty(title) && TextUtils.isEmpty(content))) {
+    public void save(String title, String content, int dailyNumber,int type) {
+        if ( !(TextUtils.isEmpty(title) && TextUtils.isEmpty(content))) {
             SaveTask saveTask = new SaveTask(mView.getViewContext());
-            saveTask.execute(new TaskEntity(title, content, dailyNumber, TaskType.TYPE_DOING));
+            saveTask.execute(new TaskEntity(title, content, dailyNumber, type));
         } else {
+            Log.e(TAG, "参数不合法 ");
             mView.onError("参数不合法");
         }
     }

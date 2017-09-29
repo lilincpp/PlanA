@@ -2,6 +2,7 @@ package com.colin.plana.ui.home;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
@@ -10,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -21,7 +23,9 @@ import com.colin.plana.ui.home.weeklytask.WeeklyTaskPresenter;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, HomeContract.View {
 
+    private static final String TAG = "MainActivity";
     private HomeContract.Presenter mPresenter;
+    private AppBarLayout mAppBarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +33,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        initView();
         new HomePresenter(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -97,6 +101,10 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void initView() {
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+    }
+
     @Override
     public void setPresenter(HomeContract.Presenter presenter) {
         mPresenter = presenter;
@@ -106,6 +114,17 @@ public class MainActivity extends AppCompatActivity
     public void moveToFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+    }
+
+    @Override
+    public void setToolBarElevation(float pixel) {
+        Log.e(TAG, "setToolBarElevation: " + pixel);
+        mAppBarLayout.setElevation(pixel);
+    }
+
+    @Override
+    public void setToolBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
     }
 
     @Override

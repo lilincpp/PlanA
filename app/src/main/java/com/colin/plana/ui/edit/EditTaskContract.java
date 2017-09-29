@@ -23,6 +23,6 @@ interface EditTaskContract {
 
     interface Presenter extends BasePresenter {
 
-        void save(String title, String content, int dailyNumber);
+        void save(String title, String content, int dailyNumber,int type);
     }
 }

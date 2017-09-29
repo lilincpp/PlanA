@@ -2,6 +2,9 @@ package com.colin.plana.entities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
+
+import com.colin.plana.constants.TaskType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +19,7 @@ public final class DailyTask implements Parcelable {
     private int dailyNumber;
     private int type;
     private ArrayList<TaskEntity> taskEntities;
+
 
     public DailyTask(String name, int dailyNumber, int type) {
         this.name = name;
@@ -36,6 +40,15 @@ public final class DailyTask implements Parcelable {
         this.type = in.readInt();
         this.taskEntities = in.readArrayList(TaskEntity.class.getClassLoader());
     }
+
+    /**
+     * 显示的列表是否为空
+     * @return
+     */
+    public boolean isEmpty() {
+        return taskEntities == null || taskEntities.size() == 0;
+    }
+
 
     public int getType() {
         return type;
@@ -61,9 +74,6 @@ public final class DailyTask implements Parcelable {
         this.dailyNumber = dailyNumber;
     }
 
-    public boolean isEmpty() {
-        return taskEntities == null || taskEntities.size() == 0;
-    }
 
     public ArrayList<TaskEntity> getTaskEntities() {
         return taskEntities;

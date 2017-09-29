@@ -18,6 +18,9 @@ public interface HomeContract {
 
         Context getContextView();
 
+        void setToolBarElevation(float pixel);
+
+        void setToolBarTitle(String title);
     }
 
 

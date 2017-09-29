@@ -84,6 +84,8 @@ public class WeeklyTaskFragment extends Fragment implements WeeklyTaskContract.V
         mTaskNames.setupWithViewPager(mWeeklyTask);
         mAddTask.setOnClickListener(this);
 
+        Log.e(TAG, "initView: "+mTaskNames.getElevation() );
+
     }
 
     @Override
