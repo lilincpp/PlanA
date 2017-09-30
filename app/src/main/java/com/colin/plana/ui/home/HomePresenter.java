@@ -39,6 +39,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void start() {
+        Log.e(TAG, "start: " + mInfo.type);
         switch (mInfo.type) {
             case TaskType.TYPE_DOING:
                 onClick(R.id.nav_plan);
@@ -88,6 +89,8 @@ public class HomePresenter implements HomeContract.Presenter {
 
         switch (itemId) {
             case R.id.nav_plan:
+                mInfo.type=TaskType.TYPE_DOING;
+                mInfo.name="计划";
                 toWeeklyPlan();
                 return;
             case R.id.nav_remind:
