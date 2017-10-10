@@ -1,42 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:background="@drawable/shape_elevation"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/shape_elevation"
         android:elevation="@dimen/elevation_4"
         app:navigationIcon="@drawable/ic_menu_back" />
 
-    <EditText
-        android:imeOptions="actionNext"
-        android:inputType="text"
-        android:id="@+id/et_title"
-        android:maxLines="@integer/taks_title_max_lines"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shape_edittext"
-        android:hint="@string/hint_title"
-        android:padding="@dimen/padding_16"
-        android:textSize="@dimen/text_xlarge_size" />
-
-    <EditText
-        android:inputType="text"
-        android:id="@+id/et_content"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/shape_edittext"
-        android:gravity="start"
-        android:lineSpacingExtra="@dimen/task_line_spacing"
-        android:hint="@string/hint_content"
-        android:padding="@dimen/padding_16"
-        android:textSize="@dimen/text_large_size" />
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_edittext"
+                android:hint="@string/hint_title"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="@integer/taks_title_max_lines"
+                android:padding="@dimen/padding_16"
+                android:textSize="@dimen/text_xlarge_size" />
+
+            <EditText
+                android:id="@+id/et_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_edittext"
+                android:gravity="start"
+                android:hint="@string/hint_content"
+                android:lineSpacingExtra="@dimen/task_line_spacing"
+                android:padding="@dimen/padding_16"
+                android:textSize="@dimen/text_large_size" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider"
+        android:elevation="@dimen/elevation_4" />
 
     <LinearLayout
         android:id="@+id/lay_bottom_menu"
@@ -47,12 +66,14 @@
         android:orientation="horizontal">
 
         <ImageButton
+            android:id="@+id/ib_task_type"
             style="?attr/borderlessButtonStyle"
-            android:layout_width="@dimen/menu_item_size"
-            android:layout_height="@dimen/menu_item_size"
+            android:layout_width="@dimen/menu_item_size_56"
+            android:layout_height="@dimen/menu_item_size_56"
             android:src="@drawable/ic_menu_expand_type" />
 
         <TextView
+            android:id="@+id/tv_task_edit_time"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -61,9 +82,10 @@
             android:textSize="@dimen/text_normal_size" />
 
         <ImageButton
+            android:id="@+id/ib_task_style"
             style="?attr/borderlessButtonStyle"
-            android:layout_width="@dimen/menu_item_size"
-            android:layout_height="@dimen/menu_item_size"
+            android:layout_width="@dimen/menu_item_size_56"
+            android:layout_height="@dimen/menu_item_size_56"
             android:src="@drawable/ic_menu_expand_palette" />
     </LinearLayout>
 

@@ -14,7 +14,6 @@ import com.colin.plana.R;
 import com.colin.plana.entities.DailyTask;
 import com.colin.plana.ui.edit.EditTaskActivity;
 import com.colin.plana.ui.home.weeklytask.dailytask.TaskListFragment;
-import com.colin.plana.ui.home.weeklytask.dailytask.TaskListPresenter;
 
 /**
  * Created by colin on 2017/9/28.
@@ -30,7 +29,7 @@ public class RemindTaskFragment extends Fragment implements RemindContract.View,
     public static RemindTaskFragment newInstance(DailyTask task) {
         Bundle bundle = new Bundle();
         RemindTaskFragment remindTaskFragment = new RemindTaskFragment();
-        bundle.putParcelable(TaskListFragment._BUNDLE_KEY, task);
+        bundle.putParcelable(TaskListFragment.TASK_KEY, task);
         remindTaskFragment.setArguments(bundle);
         new RemindPresenter(remindTaskFragment);
         return remindTaskFragment;
@@ -71,7 +70,7 @@ public class RemindTaskFragment extends Fragment implements RemindContract.View,
     private void initData() {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            mDailyTask = bundle.getParcelable(TaskListFragment._BUNDLE_KEY);
+            mDailyTask = bundle.getParcelable(TaskListFragment.TASK_KEY);
         }
         showTaskList();
     }

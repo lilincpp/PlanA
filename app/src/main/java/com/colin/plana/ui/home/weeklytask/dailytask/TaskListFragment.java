@@ -22,7 +22,7 @@ import com.colin.plana.entities.DailyTask;
 
 public class TaskListFragment extends Fragment implements TaskListContract.View {
 
-    public static final String _BUNDLE_KEY = "DAILY_TASK_KEY";
+    public static final String TASK_KEY = "DAILY_TASK_KEY";
 
     private RecyclerView mDailyTaskList;
     private TextView mTvEmpty;
@@ -36,7 +36,7 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
     public static TaskListFragment newInstance(DailyTask dailyTask) {
         Bundle bundle = new Bundle();
         TaskListFragment dailyTaskFragment = new TaskListFragment();
-        bundle.putParcelable(_BUNDLE_KEY, dailyTask);
+        bundle.putParcelable(TASK_KEY, dailyTask);
         dailyTaskFragment.setArguments(bundle);
         new TaskListPresenter(dailyTaskFragment);
         return dailyTaskFragment;
@@ -66,7 +66,7 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            mDailyTask = bundle.getParcelable(_BUNDLE_KEY);
+            mDailyTask = bundle.getParcelable(TASK_KEY);
             if (mDailyTask == null || mDailyTask.isEmpty()) {
                 showEmptyView();
             } else {
@@ -88,8 +88,9 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
         mDailyTaskList.setAdapter(mTaskListAdapter);
         mDailyTaskList.addItemDecoration(new LastSpaceItemDecoration());
 
-        //只有当前活动的任务，才可以进行上下拖拽及左右滑动
-        if (mDailyTask.getType() == TaskType.TYPE_DOING) {
+        //只有当前活动的任务(计划、提醒列表)，才可以进行上下拖拽及左右滑动
+        if (mDailyTask.getType() == TaskType.TYPE_DOING
+                || mDailyTask.getType() == TaskType.TYPE_REMIND) {
             new ItemTouchHelper(new ItemTouchHelper.Callback() {
                 @Override
                 public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
