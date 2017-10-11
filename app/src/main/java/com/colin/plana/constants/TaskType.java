@@ -9,7 +9,7 @@ public final class TaskType {
     public static final int TYPE_DOING = 1; //正在做
     public static final int TYPE_FILE = 2;  //归档
     public static final int TYPE_DELETE = 3;//删除（放到垃圾桶）
-    public static final int TYPE_REMIND = 4;
+    public static final int TYPE_REMIND = 4;//提醒
 
     public static final boolean checkLegalType(int type) {
         return

@@ -57,7 +57,7 @@ public class HomePresenter implements HomeContract.Presenter {
         WeeklyTaskFragment fragment = new WeeklyTaskFragment();
         new WeeklyTaskPresenter(fragment);
         mView.moveToFragment(fragment);
-        mView.setToolBarTitle("计划");
+        mView.setToolBarTitle(mInfo.name);
         mView.setToolBarElevation(
                 mView.getContextView().getResources().getDimension(R.dimen.elevation_0)
         );
@@ -89,8 +89,8 @@ public class HomePresenter implements HomeContract.Presenter {
 
         switch (itemId) {
             case R.id.nav_plan:
-                mInfo.type=TaskType.TYPE_DOING;
-                mInfo.name="计划";
+                mInfo.type = TaskType.TYPE_DOING;
+                mInfo.name = "计划";
                 toWeeklyPlan();
                 return;
             case R.id.nav_remind:

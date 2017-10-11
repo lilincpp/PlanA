@@ -28,14 +28,20 @@ public class EditTaskPresenter implements EditTaskContract.Presenter {
     }
 
     @Override
-    public void save(String title, String content, int dailyNumber,int type) {
-        if ( !(TextUtils.isEmpty(title) && TextUtils.isEmpty(content))) {
+    public void save(String title, String content, int dailyNumber, int type) {
+        if (checkTask(title, content) && TaskType.checkLegalType(type)) {
             SaveTask saveTask = new SaveTask(mView.getViewContext());
             saveTask.execute(new TaskEntity(title, content, dailyNumber, type));
         } else {
             Log.e(TAG, "参数不合法 ");
             mView.onError("参数不合法");
         }
+    }
+
+    private boolean checkTask(String title, String content) {
+        if (!TextUtils.isEmpty(title) || !TextUtils.isEmpty(content))
+            return true;
+        return false;
     }
 
     private class SaveTask extends AsyncTask<TaskEntity, Void, Void> {
