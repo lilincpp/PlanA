@@ -218,6 +218,7 @@ public final class BottomMenuManager {
         class ViewHolder extends RecyclerView.ViewHolder {
             ImageView mIvSrc;
             TextView mTvName;
+
             public ViewHolder(View itemView) {
                 super(itemView);
                 mIvSrc = (ImageView) itemView.findViewById(R.id.iv_item_im);

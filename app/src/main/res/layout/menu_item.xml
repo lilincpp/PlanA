@@ -10,8 +10,8 @@
     <ImageView
         android:padding="@dimen/padding_8"
         android:id="@+id/iv_item_im"
-        android:layout_width="@dimen/menu_item_size_40"
-        android:layout_height="@dimen/menu_item_size_40"
+        android:layout_width="@dimen/menu_item_size_48"
+        android:layout_height="@dimen/menu_item_size_48"
         android:clickable="false"
         android:focusable="false"
         android:src="@drawable/ic_alarm_black_24dp" />

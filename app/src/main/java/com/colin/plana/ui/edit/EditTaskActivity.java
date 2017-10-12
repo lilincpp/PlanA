@@ -97,9 +97,9 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
 
     private List<BottomMenuManager.MenuItem> makeMenu() {
         List<BottomMenuManager.MenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new BottomMenuManager.MenuItem("运动", R.drawable.ic_alarm_black_24dp));
+        menuItems.add(new BottomMenuManager.MenuItem("运动", R.drawable.ic_directions_run_black_24dp));
         menuItems.add(new BottomMenuManager.MenuItem("提醒", R.drawable.ic_alarm_black_24dp));
-        menuItems.add(new BottomMenuManager.MenuItem("面试", R.drawable.ic_alarm_black_24dp));
+        menuItems.add(new BottomMenuManager.MenuItem("面试", R.drawable.ic_add_alert_black_24dp));
         return menuItems;
     }
 
@@ -122,13 +122,21 @@ public class EditTaskActivity extends AppCompatActivity implements EditTaskContr
     private BottomMenuManager.onMenuItemClickListener mOnMenuItemClickListener = new BottomMenuManager.onMenuItemClickListener() {
         @Override
         public void onClick(BottomMenuManager.MenuItem item) {
-            switch (item.name){
+            switch (item.name) {
                 case "面试":
                     mEtTitle.setText("面试");
                     mEtContent.setText(
                             "公司：\n"
-                            +"时间：\n"
-                            +"地点：\n"
+                                    + "时间：\n"
+                                    + "地点：\n"
+                    );
+                    break;
+                case "运动":
+                    mEtTitle.setText("运动");
+                    mEtContent.setText(
+                            "项目：\n"
+                                    + "时间：\n"
+                                    + "目标：\n"
                     );
                     break;
             }
