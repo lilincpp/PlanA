@@ -19,6 +19,7 @@ import java.util.List;
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
 
     private List<TaskEntity> taskEntities;
+    private onItemLongClickListener mOnItemLongClickListener;
 
     public TaskListAdapter(List<TaskEntity> tasks) {
         taskEntities = tasks;
@@ -30,6 +31,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
     public void deleteTaskForPosition(int position) {
         taskEntities.remove(position);
+    }
+
+    public void addTaskForPosition(TaskEntity entity, int position) {
+        taskEntities.add(position, entity);
+    }
+
+    public void setOnItemLongClickListener(onItemLongClickListener mOnItemLongClickListener) {
+        this.mOnItemLongClickListener = mOnItemLongClickListener;
     }
 
     @Override
@@ -48,7 +57,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             holder.divider.setVisibility(View.GONE);
         }
 
-        if (TextUtils.isEmpty(content)){
+        if (TextUtils.isEmpty(content)) {
             holder.tvInfo.setVisibility(View.GONE);
             holder.divider.setVisibility(View.GONE);
         }
@@ -72,6 +81,20 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             tvInfo = (TextView) itemView.findViewById(R.id.tv_task_content);
             tvTitle = (TextView) itemView.findViewById(R.id.tv_task_title);
             divider = itemView.findViewById(R.id.divider);
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (mOnItemLongClickListener != null) {
+                        mOnItemLongClickListener.onLongClick(getAdapterPosition());
+                    }
+                    return true;
+                }
+            });
         }
+    }
+
+    interface onItemLongClickListener {
+        void onLongClick(int position);
     }
 }

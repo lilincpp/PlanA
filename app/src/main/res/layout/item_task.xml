@@ -8,6 +8,7 @@
     android:layout_marginTop="@dimen/padding_16"
     android:maxHeight="@dimen/task_maxheight"
     android:minHeight="@dimen/task_minheight"
+    android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical"
     app:cardElevation="@dimen/elevation_2">
 

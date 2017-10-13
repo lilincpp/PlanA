@@ -3,10 +3,14 @@ package com.colin.plana.ui.home.weeklytask.dailytask;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +19,15 @@ import android.widget.TextView;
 import com.colin.plana.R;
 import com.colin.plana.constants.TaskType;
 import com.colin.plana.entities.DailyTask;
+import com.colin.plana.entities.TaskEntity;
 
 /**
  * Created by colin on 2017/9/25.
  */
 
-public class TaskListFragment extends Fragment implements TaskListContract.View {
+public class TaskListFragment extends Fragment implements TaskListContract.View, TaskListAdapter.onItemLongClickListener {
 
+    private static final String TAG = "TaskListFragment";
     public static final String TASK_KEY = "DAILY_TASK_KEY";
 
     private RecyclerView mDailyTaskList;
@@ -82,13 +88,20 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
         mTvEmpty.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onLongClick(int position) {
+        Log.e(TAG, "onLongClick: " + position);
+    }
+
     private void showTasklist() {
         mTaskListAdapter = new TaskListAdapter(mDailyTask.getTaskEntities());
         mDailyTaskList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDailyTaskList.setAdapter(mTaskListAdapter);
-        mDailyTaskList.addItemDecoration(new LastSpaceItemDecoration());
 
-        //只有当前活动的任务(计划、提醒列表)，才可以进行上下拖拽及左右滑动
+        mDailyTaskList.addItemDecoration(new LastSpaceItemDecoration());
+        mTaskListAdapter.setOnItemLongClickListener(this);
+
+        //只有当前活动的任务(计划、提醒列表)，才可以进行上下拖拽及左右滑动删除归档
         if (mDailyTask.getType() == TaskType.TYPE_DOING
                 || mDailyTask.getType() == TaskType.TYPE_REMIND) {
             new ItemTouchHelper(new ItemTouchHelper.Callback() {
@@ -111,11 +124,29 @@ public class TaskListFragment extends Fragment implements TaskListContract.View 
 
                 @Override
                 public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                    int position = viewHolder.getAdapterPosition();
-                    mPresenter.changeTaskType(mTaskListAdapter.getTaskForPosition(position), TaskType.TYPE_FILE);
+                    final int position = viewHolder.getAdapterPosition();
+                    final TaskEntity moveTask = mTaskListAdapter.getTaskForPosition(position);
+
+                    mPresenter.changeTaskType(moveTask, TaskType.TYPE_FILE);
                     mTaskListAdapter.deleteTaskForPosition(position);
                     mTaskListAdapter.notifyItemRemoved(position);
+
+                    Snackbar.make(mTvEmpty, "已将计划归档", Snackbar.LENGTH_SHORT).setAction("撤销", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mPresenter.changeTaskType(moveTask, mDailyTask.getType());
+                            mTaskListAdapter.addTaskForPosition(moveTask, position);
+                            mTaskListAdapter.notifyItemInserted(position);
+                        }
+                    }).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+
+                        }
+                    }).setActionTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary)).show();
                 }
+
+
             }).attachToRecyclerView(mDailyTaskList);
         }
     }
