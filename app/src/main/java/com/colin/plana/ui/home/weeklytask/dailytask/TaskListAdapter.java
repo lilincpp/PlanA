@@ -2,6 +2,7 @@ package com.colin.plana.ui.home.weeklytask.dailytask;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
 
+    private static final String TAG = "TaskListAdapter";
     private List<TaskEntity> taskEntities;
     private onItemLongClickListener mOnItemLongClickListener;
 
@@ -52,14 +54,22 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         final TaskEntity task = taskEntities.get(position);
         final String title = task.getTitle();
         final String content = task.getContent();
+
+        Log.e(TAG, "onBindViewHolder-title=" + title);
+        Log.e(TAG, "onBindViewHolder-content=" + content);
+
         if (TextUtils.isEmpty(title)) {
             holder.tvTitle.setVisibility(View.GONE);
             holder.divider.setVisibility(View.GONE);
+        }else {
+            holder.tvTitle.setVisibility(View.VISIBLE);
         }
 
         if (TextUtils.isEmpty(content)) {
             holder.tvInfo.setVisibility(View.GONE);
             holder.divider.setVisibility(View.GONE);
+        }else {
+            holder.tvInfo.setVisibility(View.VISIBLE);
         }
 
         holder.tvTitle.setText(title);
@@ -85,6 +95,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+
+                    TaskEntity task = taskEntities.get(getAdapterPosition());
+                    Log.e(TAG, "onLongClick: " + task.toString());
+
                     if (mOnItemLongClickListener != null) {
                         mOnItemLongClickListener.onLongClick(getAdapterPosition());
                     }
