@@ -20,7 +20,7 @@
             android:title="已归档" />
         <item
             android:id="@+id/nav_ashcan"
-            android:icon="@drawable/ic_menu_ashcan"
+            android:icon="@drawable/ic_menu_ashcan_black"
             android:title="垃圾桶" />
     </group>
 

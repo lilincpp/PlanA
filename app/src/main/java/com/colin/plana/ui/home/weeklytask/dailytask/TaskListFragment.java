@@ -20,6 +20,7 @@ import com.colin.plana.R;
 import com.colin.plana.constants.TaskType;
 import com.colin.plana.entities.DailyTask;
 import com.colin.plana.entities.TaskEntity;
+import com.colin.plana.ui.home.MainActivity;
 
 /**
  * Created by colin on 2017/9/25.
@@ -91,6 +92,9 @@ public class TaskListFragment extends Fragment implements TaskListContract.View,
     @Override
     public void onLongClick(int position) {
         Log.e(TAG, "onLongClick: " + position);
+        if (getActivity() != null && (getActivity() instanceof MainActivity)) {
+            ((MainActivity) getActivity()).changeMenuType(MainActivity.TYPE_MENU_LONG_CLICK);
+        }
     }
 
     private void showTasklist() {
@@ -164,5 +168,12 @@ public class TaskListFragment extends Fragment implements TaskListContract.View,
     @Override
     public Context getViewContext() {
         return getActivity();
+    }
+
+
+    private onMenuChangedListener mOnMenuChangedListener;
+
+    public interface onMenuChangedListener {
+        void onChange(int type);
     }
 }

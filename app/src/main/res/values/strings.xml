@@ -5,6 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_delete_all">删除所有</string>
+    <string name="action_delete_item">删除</string>
 
     <string name="add_task">添加计划...</string>
     <string name="empty_task">当前没有计划</string>

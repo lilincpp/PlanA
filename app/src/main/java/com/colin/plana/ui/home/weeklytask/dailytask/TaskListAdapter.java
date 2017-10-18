@@ -55,20 +55,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         final String title = task.getTitle();
         final String content = task.getContent();
 
-        Log.e(TAG, "onBindViewHolder-title=" + title);
-        Log.e(TAG, "onBindViewHolder-content=" + content);
-
         if (TextUtils.isEmpty(title)) {
             holder.tvTitle.setVisibility(View.GONE);
             holder.divider.setVisibility(View.GONE);
-        }else {
+        } else {
             holder.tvTitle.setVisibility(View.VISIBLE);
         }
 
         if (TextUtils.isEmpty(content)) {
             holder.tvInfo.setVisibility(View.GONE);
             holder.divider.setVisibility(View.GONE);
-        }else {
+        } else {
             holder.tvInfo.setVisibility(View.VISIBLE);
         }
 
@@ -95,9 +92,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-
-                    TaskEntity task = taskEntities.get(getAdapterPosition());
-                    Log.e(TAG, "onLongClick: " + task.toString());
 
                     if (mOnItemLongClickListener != null) {
                         mOnItemLongClickListener.onLongClick(getAdapterPosition());

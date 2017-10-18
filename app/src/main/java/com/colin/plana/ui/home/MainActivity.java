@@ -6,6 +6,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,6 +28,11 @@ public class MainActivity extends AppCompatActivity
     private HomeContract.Presenter mPresenter;
     private AppBarLayout mAppBarLayout;
 
+    public static final int TYPE_MENU_NORMAL = 0x01;
+    public static final int TYPE_MENU_LONG_CLICK = 0x02;
+
+    private int mMenuType = TYPE_MENU_NORMAL;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,11 +41,15 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         initView();
         new HomePresenter(this);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        ActionBarDrawerToggle toggle =
+                new ActionBarDrawerToggle(
+                        this,
+                        drawer,
+                        toolbar,
+                        R.string.navigation_drawer_open,
+                        R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -62,6 +72,18 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
 
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (mMenuType == TYPE_MENU_NORMAL) {
+            menu.findItem(R.id.action_delete_item).setVisible(false);
+        } else {
+            menu.findItem(R.id.action_delete_item).setVisible(true);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -96,7 +118,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         mPresenter.onClick(item.getItemId());
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -104,6 +125,27 @@ public class MainActivity extends AppCompatActivity
 
     private void initView() {
         mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+    }
+
+    public void changeMenuType(int type) {
+        mMenuType = type;
+        changeMenuStyle();
+    }
+
+    /**
+     * 改变Toolbar的样式及相关UI
+     */
+    private void changeMenuStyle() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (mMenuType == TYPE_MENU_NORMAL) {
+            //正常菜单
+            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary));
+        } else {
+            //长按菜单
+            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.colorWhite));
+        }
+
+        invalidateOptionsMenu();
     }
 
     @Override
