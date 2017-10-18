@@ -1,6 +1,7 @@
 package com.colin.plana.ui.home;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.colin.plana.R;
 import com.colin.plana.database.TaskDatabaseHelper;
@@ -27,6 +29,9 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private HomeContract.Presenter mPresenter;
     private AppBarLayout mAppBarLayout;
+    private Toolbar mToolbar;
+    private DrawerLayout mDrawer;
+    private ActionBarDrawerToggle mToggle;
 
     public static final int TYPE_MENU_NORMAL = 0x01;
     public static final int TYPE_MENU_LONG_CLICK = 0x02;
@@ -37,20 +42,11 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
         initView();
+        setSupportActionBar(mToolbar);
+        initDrawerMenu();
         new HomePresenter(this);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle =
-                new ActionBarDrawerToggle(
-                        this,
-                        drawer,
-                        toolbar,
-                        R.string.navigation_drawer_open,
-                        R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -77,6 +73,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+
         if (mMenuType == TYPE_MENU_NORMAL) {
             menu.findItem(R.id.action_delete_item).setVisible(false);
         } else {
@@ -124,28 +121,88 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initView() {
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar);
     }
 
-    public void changeMenuType(int type) {
-        mMenuType = type;
-        changeMenuStyle();
+    private void initDrawerMenu() {
+        mToggle =
+                new ActionBarDrawerToggle(
+                        this,
+                        mDrawer,
+                        mToolbar,
+                        R.string.navigation_drawer_open,
+                        R.string.navigation_drawer_close);
+        mDrawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if (mMenuType == TYPE_MENU_LONG_CLICK) {
+                    changeMenuType(TYPE_MENU_NORMAL);
+                }
+                //由于我们使用自己的DrawerListener，因此为了不影响Drawer与Toolbar的联动（动画方面）
+                //所以这里需要手动调用相关的回调。
+                mToggle.onDrawerSlide(drawerView, slideOffset);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                mToggle.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                mToggle.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                mToggle.onDrawerStateChanged(newState);
+            }
+        });
+        mToggle.syncState();
+    }
+
+
+    private void changeToolbarNavigationAction() {
+        if (mMenuType == TYPE_MENU_NORMAL) {
+            initDrawerMenu();
+        } else {
+            //重新设置Navigation Icon及点击事件
+            mToolbar.setNavigationIcon(R.drawable.ic_menu_gray);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changeMenuType(TYPE_MENU_NORMAL);
+                }
+            });
+        }
+
     }
 
     /**
      * 改变Toolbar的样式及相关UI
      */
     private void changeMenuStyle() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mMenuType == TYPE_MENU_NORMAL) {
             //正常菜单
-            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+            mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            mToolbar.setOverflowIcon(getDrawable(R.drawable.ic_more_vert_white_24dp));
         } else {
             //长按菜单
-            toolbar.setBackgroundColor(ContextCompat.getColor(this,R.color.colorWhite));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorGray));
+            mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
+            mToolbar.setOverflowIcon(getDrawable(R.drawable.ic_more_vert_gray_24dp));
         }
-
+        //重新绘制Toolbar上的Menu选项
         invalidateOptionsMenu();
+    }
+
+    public void changeMenuType(int type) {
+        mMenuType = type;
+        changeMenuStyle();
+        changeToolbarNavigationAction();
     }
 
     @Override
