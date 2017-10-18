@@ -6,12 +6,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.colin.plana.R;
+import com.colin.plana.constants.TaskType;
 import com.colin.plana.entities.TaskEntity;
+import com.colin.plana.ui.home.MainActivity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by colin on 2017/9/26.
@@ -22,25 +27,44 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     private static final String TAG = "TaskListAdapter";
     private List<TaskEntity> taskEntities;
     private onItemLongClickListener mOnItemLongClickListener;
+    private int mMenuType = MainActivity.TYPE_MENU_NORMAL;
+    private int mType;
 
-    public TaskListAdapter(List<TaskEntity> tasks) {
+    public TaskListAdapter(List<TaskEntity> tasks, int type) {
         taskEntities = tasks;
+        mType = type;
     }
 
     public TaskEntity getTaskForPosition(int position) {
         return taskEntities.get(position);
     }
 
-    public void deleteTaskForPosition(int position) {
-        taskEntities.remove(position);
+    public void deleteTask(TaskEntity taskEntity) {
+        taskEntities.remove(taskEntity);
     }
 
     public void addTaskForPosition(TaskEntity entity, int position) {
+        Log.e(TAG, "addTaskForPosition: " + position + "," + entity.toString());
         taskEntities.add(position, entity);
     }
 
     public void setOnItemLongClickListener(onItemLongClickListener mOnItemLongClickListener) {
         this.mOnItemLongClickListener = mOnItemLongClickListener;
+    }
+
+    public void setType(int type) {
+        mMenuType = type;
+        notifyDataSetChanged();
+    }
+
+    public Map<Integer, TaskEntity> getSelectedTasks() {
+        Map<Integer, TaskEntity> selected = new HashMap<>();
+        for (int i = 0; i < taskEntities.size(); ++i) {
+            if (taskEntities.get(i).isSelected()) {
+                selected.put(i, taskEntities.get(i));
+            }
+        }
+        return selected;
     }
 
     @Override
@@ -50,10 +74,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final TaskEntity task = taskEntities.get(position);
         final String title = task.getTitle();
         final String content = task.getContent();
+
+        if (mMenuType == MainActivity.TYPE_MENU_NORMAL) {
+            task.setSelected(false);
+        }
+
+        holder.lay.setSelected(task.isSelected());
 
         if (TextUtils.isEmpty(title)) {
             holder.tvTitle.setVisibility(View.GONE);
@@ -71,6 +101,37 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
         holder.tvTitle.setText(title);
         holder.tvInfo.setText(content);
+
+        holder.lay.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                if (mType != TaskType.TYPE_FILE) {
+                    return true;
+                }
+
+                if (mMenuType == MainActivity.TYPE_MENU_NORMAL) {
+                    if (mOnItemLongClickListener != null) {
+                        mOnItemLongClickListener.onLongClick();
+                    }
+                    mMenuType = MainActivity.TYPE_MENU_LONG_CLICK;
+                }
+
+                task.setSelected(true);
+                notifyItemChanged(position);
+                return true;
+            }
+        });
+
+        holder.lay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMenuType == MainActivity.TYPE_MENU_LONG_CLICK) {
+                    task.setSelected(!task.isSelected());
+                    notifyItemChanged(position);
+                }
+            }
+        });
     }
 
     @Override
@@ -80,29 +141,22 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout lay;
         TextView tvInfo, tvTitle;
         View divider;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
+            lay = (LinearLayout) itemView.findViewById(R.id.lay);
             tvInfo = (TextView) itemView.findViewById(R.id.tv_task_content);
             tvTitle = (TextView) itemView.findViewById(R.id.tv_task_title);
             divider = itemView.findViewById(R.id.divider);
 
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-
-                    if (mOnItemLongClickListener != null) {
-                        mOnItemLongClickListener.onLongClick(getAdapterPosition());
-                    }
-                    return true;
-                }
-            });
         }
     }
 
+
     interface onItemLongClickListener {
-        void onLongClick(int position);
+        void onLongClick();
     }
 }

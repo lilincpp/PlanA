@@ -22,6 +22,7 @@ import com.colin.plana.R;
 import com.colin.plana.database.TaskDatabaseHelper;
 import com.colin.plana.ui.home.weeklytask.WeeklyTaskFragment;
 import com.colin.plana.ui.home.weeklytask.WeeklyTaskPresenter;
+import com.colin.plana.ui.home.weeklytask.dailytask.TaskListFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, HomeContract.View {
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity
     private Toolbar mToolbar;
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mToggle;
+
+    private TaskListFragment.onMenuChangedListener onMenuChangedListener;
 
     public static final int TYPE_MENU_NORMAL = 0x01;
     public static final int TYPE_MENU_LONG_CLICK = 0x02;
@@ -61,9 +64,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
+        } else if (mMenuType == TYPE_MENU_LONG_CLICK) {
+            changeMenuType(TYPE_MENU_NORMAL);
         } else {
             super.onBackPressed();
         }
@@ -96,7 +100,6 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_delete_all) {
             TaskDatabaseHelper.deleteAllTask(this);
@@ -104,6 +107,12 @@ public class MainActivity extends AppCompatActivity
             WeeklyTaskFragment weeklyTaskListFragment = new WeeklyTaskFragment();
             fragmentManager.beginTransaction().replace(R.id.container, weeklyTaskListFragment).commit();
             new WeeklyTaskPresenter(weeklyTaskListFragment);
+            return true;
+        } else if (id == R.id.action_delete_item) {
+            if (onMenuChangedListener != null) {
+                onMenuChangedListener.onMenuItemClick(id);
+            }
+            changeMenuType(TYPE_MENU_NORMAL);
             return true;
         }
 
@@ -203,7 +212,15 @@ public class MainActivity extends AppCompatActivity
         mMenuType = type;
         changeMenuStyle();
         changeToolbarNavigationAction();
+        if (onMenuChangedListener != null) {
+            onMenuChangedListener.onChanged(type);
+        }
     }
+
+    public void registerMenuChangedListener(TaskListFragment.onMenuChangedListener listener) {
+        onMenuChangedListener = listener;
+    }
+
 
     @Override
     public void setPresenter(HomeContract.Presenter presenter) {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cv"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/padding_8"
@@ -8,11 +9,13 @@
     android:layout_marginTop="@dimen/padding_16"
     android:maxHeight="@dimen/task_maxheight"
     android:minHeight="@dimen/task_minheight"
-    android:foreground="?android:attr/selectableItemBackground"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
     android:orientation="vertical"
     app:cardElevation="@dimen/elevation_2">
 
     <LinearLayout
+        android:id="@+id/lay"
+        android:background="@drawable/selector_white_to_line_gray"
         android:padding="@dimen/padding_16"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

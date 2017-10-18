@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -21,6 +22,15 @@ import com.colin.plana.constants.TaskType;
 import com.colin.plana.entities.DailyTask;
 import com.colin.plana.entities.TaskEntity;
 import com.colin.plana.ui.home.MainActivity;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * Created by colin on 2017/9/25.
@@ -90,15 +100,15 @@ public class TaskListFragment extends Fragment implements TaskListContract.View,
     }
 
     @Override
-    public void onLongClick(int position) {
-        Log.e(TAG, "onLongClick: " + position);
+    public void onLongClick() {
         if (getActivity() != null && (getActivity() instanceof MainActivity)) {
             ((MainActivity) getActivity()).changeMenuType(MainActivity.TYPE_MENU_LONG_CLICK);
+            ((MainActivity) getActivity()).registerMenuChangedListener(mOnMenuChangedListener);
         }
     }
 
     private void showTasklist() {
-        mTaskListAdapter = new TaskListAdapter(mDailyTask.getTaskEntities());
+        mTaskListAdapter = new TaskListAdapter(mDailyTask.getTaskEntities(),mDailyTask.getType());
         mDailyTaskList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDailyTaskList.setAdapter(mTaskListAdapter);
 
@@ -131,23 +141,26 @@ public class TaskListFragment extends Fragment implements TaskListContract.View,
                     final int position = viewHolder.getAdapterPosition();
                     final TaskEntity moveTask = mTaskListAdapter.getTaskForPosition(position);
 
-                    mPresenter.changeTaskType(moveTask, TaskType.TYPE_FILE);
-                    mTaskListAdapter.deleteTaskForPosition(position);
+                    mTaskListAdapter.deleteTask(moveTask);
                     mTaskListAdapter.notifyItemRemoved(position);
 
-                    Snackbar.make(mTvEmpty, "已将计划归档", Snackbar.LENGTH_SHORT).setAction("撤销", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mPresenter.changeTaskType(moveTask, mDailyTask.getType());
-                            mTaskListAdapter.addTaskForPosition(moveTask, position);
-                            mTaskListAdapter.notifyItemInserted(position);
-                        }
-                    }).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                        @Override
-                        public void onDismissed(Snackbar transientBottomBar, int event) {
-
-                        }
-                    }).setActionTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary)).show();
+                    Snackbar.make(mTvEmpty, "已将计划归档", Snackbar.LENGTH_SHORT)
+                            .setAction("撤销", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mTaskListAdapter.addTaskForPosition(moveTask, position);
+                                    mTaskListAdapter.notifyItemInserted(position);
+                                }
+                            })
+                            .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                                @Override
+                                public void onDismissed(Snackbar transientBottomBar, int event) {
+                                    if (event == DISMISS_EVENT_TIMEOUT) {
+                                        mPresenter.changeTaskType(moveTask, TaskType.TYPE_FILE);
+                                    }
+                                }
+                            })
+                            .setActionTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary)).show();
                 }
 
 
@@ -171,9 +184,54 @@ public class TaskListFragment extends Fragment implements TaskListContract.View,
     }
 
 
-    private onMenuChangedListener mOnMenuChangedListener;
+    private onMenuChangedListener mOnMenuChangedListener = new onMenuChangedListener() {
+        @Override
+        public void onChanged(int type) {
+            mTaskListAdapter.setType(type);
+        }
+
+        @Override
+        public void onMenuItemClick(int id) {
+            switch (id) {
+                case R.id.action_delete_item:
+                    final Map<Integer, TaskEntity> selected = mTaskListAdapter.getSelectedTasks();
+                    final Set<Integer> positions = new TreeSet<Integer>(selected.keySet());
+                    for (int i : positions) {
+                        Log.e(TAG, "onMenuItemClick: " + i);
+                        mTaskListAdapter.deleteTask(selected.get(i));
+                        mTaskListAdapter.notifyItemRemoved(i);
+                    }
+
+                    Snackbar.make(mTvEmpty, "已将计划移至垃圾桶，27天后会自动删除", Snackbar.LENGTH_SHORT)
+                            .setAction("撤销", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    for (int i : positions) {
+                                        Log.e(TAG, "onClick: " + i);
+                                        mTaskListAdapter.addTaskForPosition(selected.get(i), i);
+                                        mTaskListAdapter.notifyItemInserted(i);
+                                    }
+                                }
+                            })
+                            .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                                @Override
+                                public void onDismissed(Snackbar transientBottomBar, int event) {
+                                    if (event == DISMISS_EVENT_TIMEOUT) {
+                                        mPresenter.changeTaskType(new ArrayList<>(selected.values()), TaskType.TYPE_DELETE);
+                                    }
+                                }
+                            })
+                            .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary))
+                            .show();
+
+                    break;
+            }
+        }
+    };
 
     public interface onMenuChangedListener {
-        void onChange(int type);
+        void onChanged(int type);
+
+        void onMenuItemClick(int id);
     }
 }

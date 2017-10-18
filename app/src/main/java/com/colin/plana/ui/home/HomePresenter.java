@@ -47,6 +47,12 @@ public class HomePresenter implements HomeContract.Presenter {
             case TaskType.TYPE_REMIND:
                 onClick(R.id.nav_remind);
                 break;
+            case TaskType.TYPE_FILE:
+                onClick(R.id.nav_file);
+                break;
+            case TaskType.TYPE_DELETE:
+                onClick(R.id.nav_ashcan);
+                break;
             default:
                 toWeeklyPlan();
                 break;
@@ -82,7 +88,6 @@ public class HomePresenter implements HomeContract.Presenter {
         );
     }
 
-
     @Override
     public void onClick(int itemId) {
         LoadDataTask loadDataTask = new LoadDataTask(mView.getContextView());
@@ -100,6 +105,10 @@ public class HomePresenter implements HomeContract.Presenter {
             case R.id.nav_file:
                 mInfo.type = TaskType.TYPE_FILE;
                 mInfo.name = "已归档";
+                break;
+            case R.id.nav_ashcan:
+                mInfo.type = TaskType.TYPE_DELETE;
+                mInfo.name = "垃圾桶";
                 break;
             default:
 
@@ -126,6 +135,7 @@ public class HomePresenter implements HomeContract.Presenter {
         protected void onPostExecute(DailyTask task) {
             switch (task.getType()) {
                 case TaskType.TYPE_FILE:
+                case TaskType.TYPE_DELETE:
                     toTaskList(task);
                     break;
                 case TaskType.TYPE_REMIND:

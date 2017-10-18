@@ -38,6 +38,17 @@ public final class TaskEntity implements Parcelable {
     private int dailyNumber;
     private int type;
 
+    //是否被选中
+    private boolean selected = false;
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
     public int getId() {
         return id;
     }
